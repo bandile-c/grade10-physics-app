@@ -1,0 +1,166 @@
+{
+  "curriculum": "CAPS South Africa",
+  "grade": "10",
+  "subject": "Physical Sciences",
+  "modules": [
+    {
+      "chapter": 7,
+      "title": "Transverse Pulses",
+      "sections": [
+        {
+          "id": "7.1",
+          "title": "Introduction and Key Concepts",
+          "content": "A pulse is a single disturbance that moves through a medium. A medium is the substance or material through which a pulse moves, carrying the pulse from one place to another without travelling with it. Particles of the medium are moved temporarily from their rest (equilibrium) position.",
+          "definitions": [
+            {
+              "term": "Medium",
+              "definition": "The substance or material in which a pulse will move."
+            },
+            {
+              "term": "Pulse",
+              "definition": "A single disturbance that moves through a medium."
+            },
+            {
+              "term": "Transverse Pulse",
+              "definition": "A pulse where all of the particles disturbed by the pulse move perpendicular (at a right angle) to the direction in which the pulse is moving."
+            }
+          ]
+        },
+        {
+          "id": "7.2",
+          "title": "Pulse Length and Amplitude",
+          "content": "The amplitude of a pulse is a measurement of how far the medium is displaced momentarily from its position of rest (equilibrium position). The pulse length is a measurement of how long the pulse is.",
+          "quantities": [
+            {
+              "name": "Amplitude",
+              "symbol": "A",
+              "unit_name": "metre",
+              "unit_symbol": "m"
+            }
+          ]
+        },
+        {
+          "id": "7.3",
+          "title": "Pulse Speed",
+          "content": "Pulse speed is the distance a pulse travels per unit time.",
+          "formula": "v = D / t",
+          "quantities": [
+            {
+              "name": "Pulse speed",
+              "symbol": "v",
+              "unit_name": "metre per second",
+              "unit_symbol": "m·s⁻¹"
+            }
+          ],
+          "worked_example": {
+            "problem": "A pulse covers a distance of 2 m in 4 s on a heavy rope. Calculate the pulse speed.",
+            "given": { "D": "2 m", "t": "4 s" },
+            "calculation": "v = D / t = 2 m / 4 s = 0.5 m·s⁻¹",
+            "answer": "The pulse speed is 0.5 m·s⁻¹."
+          }
+        },
+        {
+          "id": "7.4",
+          "title": "Superposition of Pulses",
+          "content": "The principle of superposition states that when two disturbances occupy the same space at the same time, the resulting disturbance is the sum of the two disturbances. After passing, their original amplitudes remain unchanged.",
+          "definitions": [
+            {
+              "term": "Constructive interference",
+              "definition": "When two pulses meet, resulting in a bigger pulse (amplitudes combine)."
+            },
+            {
+              "term": "Destructive interference",
+              "definition": "When two pulses meet, resulting in a smaller pulse (amplitudes subtract)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chapter": 8,
+      "title": "Transverse Waves",
+      "sections": [
+        {
+          "id": "8.1",
+          "title": "What is a Transverse Wave?",
+          "content": "A wave is a periodic, continuous disturbance that consists of a train or succession of pulses. There is no net displacement of the particles themselves (they return to equilibrium), but there is a net displacement of the wave energy.",
+          "definitions": [
+            {
+              "term": "Wave",
+              "definition": "A periodic, continuous disturbance that consists of a train of pulses."
+            },
+            {
+              "term": "Transverse wave",
+              "definition": "A wave where the movement of the particles of the medium is perpendicular (at a right angle) to the direction of propagation of the wave."
+            }
+          ]
+        },
+        {
+          "id": "8.2",
+          "title": "Crests, Troughs, and Amplitude",
+          "content": "The amplitude of a wave is the maximum displacement of the medium from the equilibrium position. The SI unit of amplitude is the metre (m).",
+          "definitions": [
+            {
+              "term": "Crest",
+              "definition": "A point on the wave where the displacement of the medium is at a maximum."
+            },
+            {
+              "term": "Trough",
+              "definition": "A point on the wave where the displacement of the medium is at a minimum."
+            }
+          ]
+        },
+        {
+          "id": "8.3",
+          "title": "Wavelength and Phase",
+          "content": "Wavelength is represented by the Greek letter λ (lambda). Points separated by a whole number multiple of whole wave cycles are said to be in phase.",
+          "definitions": [
+            {
+              "term": "Wavelength",
+              "definition": "The distance between any two adjacent points that are in phase."
+            }
+          ],
+          "worked_example": {
+            "problem": "The total distance between 4 consecutive crests of a transverse wave is 6 m. What is the wavelength of the wave?",
+            "explanation": "4 consecutive crests equals 3 complete wavelengths (3λ).",
+            "calculation": "3λ = 6 m => λ = 6 / 3 = 2 m",
+            "answer": "The wavelength is 2 m."
+          }
+        },
+        {
+          "id": "8.4",
+          "title": "Period and Frequency",
+          "content": "Period and frequency are inversely proportional parameters describing the timing of continuous oscillations.",
+          "formulas": ["f = 1 / T", "T = 1 / f"],
+          "quantities": [
+            {
+              "name": "Period",
+              "symbol": "T",
+              "unit_name": "second",
+              "unit_symbol": "s",
+              "description": "The time taken for two successive crests to pass a fixed point."
+            },
+            {
+              "name": "Frequency",
+              "symbol": "f",
+              "unit_name": "hertz",
+              "unit_symbol": "Hz (s⁻¹)",
+              "description": "The number of successive crests passing a given point in 1 second."
+            }
+          ]
+        },
+        {
+          "id": "8.5",
+          "title": "The Wave Equation",
+          "content": "The speed of a wave can be found using the relationship between its frequency and wavelength.",
+          "formulas": ["v = f · λ", "v = λ / T"],
+          "worked_example": {
+            "problem": "A cork on the surface of a swimming pool bobs up and down once every second (1 Hz). The ripples have a wavelength of 20 cm (0.2 m). If the cork is 2 m from the edge, how long does it take a ripple to reach the edge?",
+            "calculation": "v = f · λ = (1 Hz)(0.2 m) = 0.2 m·s⁻¹. Then t = D / v = 2 m / 0.2 m·s⁻¹ = 10 s",
+            "answer": "It takes 10 seconds to reach the edge."
+          }
+        }
+      ]
+    }
+  ]
+}
