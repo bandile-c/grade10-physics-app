@@ -5,6 +5,16 @@ const port = process.env.PORT || 8080;
 
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
+// Helper function to convert an Azure readable stream into text content
+async function streamToText(readableStream) {
+    return new Promise((resolve, reject) => {
+        const chunks = [];
+        readableStream.on("data", (data) => chunks.push(data.toString()));
+        readableStream.on("end", () => resolve(chunks.join("")));
+        readableStream.on("error", reject);
+    });
+}
+
 // Welcome / Status route
 app.get('/', (req, res) => {
     res.send(`
@@ -14,7 +24,7 @@ app.get('/', (req, res) => {
     `);
 });
 
-// API Route to fetch available physics material from Azure
+// API Route to stream and parse physics curriculum content from Azure
 app.get('/api/lessons', async (req, res) => {
     try {
         if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -24,23 +34,21 @@ app.get('/api/lessons', async (req, res) => {
         const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
         const containerClient = blobServiceClient.getContainerClient('study-material');
         
-        let modules = [];
-        for await (const blob of containerClient.listBlobsFlat()) {
-            modules.push({
-                fileName: blob.name,
-                url: `https://${blobServiceClient.accountName}.blob.core.windows.net/study-material/${blob.name}`,
-                lastUpdated: blob.properties.lastModified
-            });
-        }
+        // Directly target the lessons.json file in the container
+        const blockBlobClient = containerClient.getBlockBlobClient('lessons.json');
         
-        res.json({
-            curriculum: "CAPS South Africa",
-            grade: "10",
-            term: "1",
-            subject: "Physical Sciences",
-            totalFiles: modules.length,
-            modules: modules
-        });
+        // Download the file stream from Azure Blob Storage
+        const downloadBlockBlobResponse = await blockBlobClient.download(0);
+        
+        // Convert that stream into standard text
+        const downloadedContent = await streamToText(downloadBlockBlobResponse.readableStreamBody);
+        
+        // Parse the text into a real JSON object so the frontend can read it instantly
+        const curriculumData = JSON.parse(downloadedContent);
+        
+        // Return the clean CAPS curriculum data directly
+        res.json(curriculumData);
+        
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
