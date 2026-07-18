@@ -1,0 +1,13 @@
+{
+  "name": "grade10-physics-backend",
+  "version": "1.0.0",
+  "description": "Azure-backed API for Grade 10 Term 1 Physical Sciences",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@azure/storage-blob": "^12.24.0",
+    "express": "^4.19.2"
+  }
+}
