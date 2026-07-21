@@ -229,7 +229,7 @@ app.get('/', (req, res) => {
         let currentQuestion = 0;
         let score = 0;
 
-        const quizData = [
+       const quizData = [
             {
                 question: "1. Which of the following is a VECTOR quantity?",
                 options: ["A) Time (seconds)", "B) Velocity (m/s East)", "C) Mass (kg)", "D) Distance (meters)"],
@@ -239,6 +239,46 @@ app.get('/', (req, res) => {
                 question: "2. What is the unit of measurement for Acceleration in CAPS Physics?",
                 options: ["A) m/s", "B) N/kg", "C) m/s²", "D) kg·m/s"],
                 answer: 2
+            },
+            {
+                question: "3. What is the rate of change of position called?",
+                options: ["A) Speed", "B) Velocity", "C) Acceleration", "D) Displacement"],
+                answer: 1
+            },
+            {
+                question: "4. Which of the following is an example of a SCALAR quantity?",
+                options: ["A) Force", "B) Displacement", "C) Temperature", "D) Acceleration"],
+                answer: 2
+            },
+            {
+                question: "5. What is the standard SI unit for Gravitational Potential Energy?",
+                options: ["A) Watt (W)", "B) Newton (N)", "C) Joule (J)", "D) Pascal (Pa)"],
+                answer: 2
+            },
+            {
+                question: "6. An object falls freely towards Earth (ignoring air resistance). What happens to its Mechanical Energy?",
+                options: ["A) It increases", "B) It decreases", "C) It remains constant", "D) It drops to zero"],
+                answer: 2
+            },
+            {
+                question: "7. Which formula is used to calculate the Kinetic Energy of an object?",
+                options: ["A) Ek = mgh", "B) Ek = ½mv²", "C) Ek = F × d", "D) Ek = v / t"],
+                answer: 1
+            },
+            {
+                question: "8. Like electric charges (e.g., two positive charges) will always:",
+                options: ["A) Attract each other", "B) Repel each other", "C) Neutralize completely", "D) Have no effect"],
+                answer: 1
+            },
+            {
+                question: "9. According to the Principle of Conservation of Charge, charge can be:",
+                options: ["A) Created but not destroyed", "B) Destroyed but not created", "C) Transferred from one object to another", "D) Permanently lost"],
+                answer: 2
+            },
+            {
+                question: "10. What is the net displacement of a student who walks 5 meters North and then 5 meters South?",
+                options: ["A) 10 meters North", "B) 10 meters", "C) 5 meters South", "D) 0 meters"],
+                answer: 3
             }
         ];
 
