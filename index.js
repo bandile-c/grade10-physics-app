@@ -3,6 +3,9 @@ const { BlobServiceClient } = require('@azure/storage-blob');
 const app = express();
 const port = process.env.PORT || 8080;
 
+// Express middleware to parse incoming JSON data from the quiz submission
+app.use(express.json());
+
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
 // Helper function to convert an Azure readable stream into text content
@@ -32,6 +35,7 @@ app.get('/', (req, res) => {
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
+            --success-color: #22c55e;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -107,19 +111,200 @@ app.get('/', (req, res) => {
         }
         .example-header { color: #a78bfa; font-weight: bold; margin-bottom: 5px; }
         .loading { text-align: center; font-size: 1.2rem; color: var(--text-muted); }
+
+        /* Student Login Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #0f172a;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        .modal-box button, .quiz-btn {
+            background: var(--accent-color);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+        }
+        .modal-box button:hover, .quiz-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Quiz UI Styles */
+        .quiz-card {
+            background: #1e1b4b;
+            border: 1px solid #6366f1;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            background: #312e81;
+            color: #fff;
+            border: 1px solid #4338ca;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+        }
+        .option-btn:hover { background: #3730a3; }
+        .user-badge {
+            float: right;
+            background: #0284c7;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
     </style>
 </head>
 <body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2>👋 Welcome, Physics Student!</h2>
+            <p style="color: var(--text-muted);">Enter your email address to access your CAPS summary & weekly practice quiz:</p>
+            <form id="loginForm">
+                <input type="email" id="studentEmailInput" placeholder="student@gmail.com" required />
+                <button type="submit">Start Learning 🚀</button>
+            </form>
+        </div>
+    </div>
+
     <div class="container">
         <header>
+            <span id="userBadge" class="user-badge" style="display:none;"></span>
             <h1>⚡ Grade 10 Physical Sciences Portal</h1>
             <p class="subtitle">CAPS Curriculum Modules — Term 1</p>
         </header>
         
         <div id="app"><div class="loading">Loading curriculum study material...</div></div>
+
+        <!-- Grade 10 Physics Practice Quiz Section -->
+        <div id="quizContainer" class="quiz-card" style="display: none;">
+            <h2 style="color: #a5b4fc; margin-top: 0;">🎯 Quick Practice Check: CAPS Vectors & Motion</h2>
+            <div id="quizContent">
+                <p id="quizQuestion" style="font-size: 1.1em; font-weight: bold;"></p>
+                <div id="quizOptions"></div>
+            </div>
+            <div id="quizResult" style="display:none; text-align:center;">
+                <h3 style="color: var(--success-color);">Awesome job! Quiz Submitted 🎉</h3>
+                <p id="scoreText"></p>
+                <p style="color: var(--text-muted);">Your progress and answers have been recorded for your tutor.</p>
+            </div>
+        </div>
     </div>
 
     <script>
+        let studentEmail = "";
+        let currentQuestion = 0;
+        let score = 0;
+
+        const quizData = [
+            {
+                question: "1. Which of the following is a VECTOR quantity?",
+                options: ["A) Time (seconds)", "B) Velocity (m/s East)", "C) Mass (kg)", "D) Distance (meters)"],
+                answer: 1
+            },
+            {
+                question: "2. What is the unit of measurement for Acceleration in CAPS Physics?",
+                options: ["A) m/s", "B) N/kg", "C) m/s²", "D) kg·m/s"],
+                answer: 2
+            }
+        ];
+
+        // Handle Login Modal Submission
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            studentEmail = document.getElementById('studentEmailInput').value;
+            if(studentEmail) {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('userBadge').innerText = "👤 " + studentEmail;
+                document.getElementById('userBadge').style.display = 'block';
+                document.getElementById('quizContainer').style.display = 'block';
+                loadCurriculum();
+                loadQuiz();
+            }
+        });
+
+        function loadQuiz() {
+            if(currentQuestion < quizData.length) {
+                const q = quizData[currentQuestion];
+                document.getElementById('quizQuestion').innerText = q.question;
+                const optionsDiv = document.getElementById('quizOptions');
+                optionsDiv.innerHTML = '';
+                
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => selectOption(idx);
+                    optionsDiv.appendChild(btn);
+                });
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function selectOption(idx) {
+            if(idx === quizData[currentQuestion].answer) {
+                score++;
+            }
+            currentQuestion++;
+            loadQuiz();
+        }
+
+        async function finishQuiz() {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('scoreText').innerText = \`You scored \${score} out of \${quizData.length}!\`;
+
+            // Log Student Score & Email to Backend API
+            try {
+                await fetch('/api/quiz-submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: studentEmail,
+                        score: score,
+                        total: quizData.length,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch(err) {
+                console.log('Error logging quiz results:', err);
+            }
+        }
+
         async function loadCurriculum() {
             try {
                 const response = await fetch('/api/lessons');
@@ -182,7 +367,6 @@ app.get('/', (req, res) => {
                 document.getElementById('app').innerHTML = '<p style="color:red;">Error loading layout framework.</p>';
             }
         }
-        loadCurriculum();
     </script>
 </body>
 </html>
@@ -209,6 +393,15 @@ app.get('/api/lessons', async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
+});
+
+// API Route to log student login and quiz results
+app.post('/api/quiz-submit', (req, res) => {
+    const { email, score, total, timestamp } = req.body;
+    console.log(`[STUDENT ACCESS & QUIZ LOGGED] Email: ${email} | Score: ${score}/${total} | Time: ${timestamp}`);
+    
+    // Returns confirmation back to student interface
+    res.json({ success: true, message: "Activity logged successfully." });
 });
 
 app.listen(port, () => {
